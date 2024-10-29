@@ -40,6 +40,27 @@ public class SupportTicketController {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
+    }
 
+    @PutMapping("/supportticket/{uuid}")
+    public ResponseEntity<SupportTicketResponse> updateSupportTicket(@PathVariable UUID uuid, @RequestBody SupportTicketRequest supportTicketRequest) {
+        try {
+            SupportTicketResponse supportTicketResponse = supportTicketService.update(uuid, supportTicketRequest);
+            return ResponseEntity.ok(supportTicketResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/supportticket/{uuid}")
+    public ResponseEntity<Void> deleteSupportTicket(@PathVariable UUID uuid){
+        try{
+            supportTicketService.delete(uuid);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

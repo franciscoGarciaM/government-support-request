@@ -87,4 +87,45 @@ public class SupportTicketService {
         supportTicket.setEvidences(evidences);
         return SupportTicketMapper.mapEntityToResponse(supportTicketRepository.save(supportTicket));
     }
+
+    @Transactional
+    public SupportTicketResponse update(UUID uuid, SupportTicketRequest supportTicketRequest){
+        SupportTicket existingTicket = supportTicketRepository.findByUuid(uuid).orElseThrow(() -> new RuntimeException("Support ticket not found"));
+
+        existingTicket.setNumTicket(supportTicketRequest.getNumTicket());
+        existingTicket.setDeviceCharacteristics(supportTicketRequest.getDeviceCharacteristics());
+        existingTicket.setRepairDescription(supportTicketRequest.getRepairDescription());
+        existingTicket.setTicketDetail(supportTicketRequest.getTicketDetail());
+        existingTicket.setEstimateDate(supportTicketRequest.getEstimateDate());
+        existingTicket.setEndDate(supportTicketRequest.getEndDate());
+
+        //uuid de DeviceType
+        DeviceType device =deviceTypeRepository.findByUuid(supportTicketRequest.getDeviceType().getUuid())
+                .orElseThrow(() -> new ResourceNotException("Device type not found"));
+        existingTicket.setDeviceType(device);
+
+        //uuid de TypeService
+        TypeService service = typeServiceRepository.findByUuid(supportTicketRequest.getTypeService().getUuid())
+                .orElseThrow(() -> new ResourceNotException("Type service not found"));
+        existingTicket.setTypeService(service);
+
+        //uuid de Diagnosis
+        Diagnosis diagnosis = diagnosisRepository.findDiagnosisByUuid(supportTicketRequest.getDiagnosis().getUuid())
+                .orElseThrow(() -> new ResourceNotException("Diagnosis not found"));
+        existingTicket.setDiagnosis(diagnosis);
+
+        //uuid de ServiceStatus
+        ServiceStatus status = serviceStatusRepository.findByUuid(supportTicketRequest.getServiceStatus().getUuid())
+                .orElseThrow(() -> new ResourceNotException("Service status not found"));
+        existingTicket.setServiceStatus(status);
+
+        return SupportTicketMapper.mapEntityToResponse(supportTicketRepository.save(existingTicket));
+    }
+
+    @Transactional
+    public void delete(UUID uuid){
+        SupportTicket deleteTicket = supportTicketRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Support ticket not found"));
+        supportTicketRepository.delete(deleteTicket);
+    }
 }
