@@ -15,9 +15,7 @@ import java.util.UUID;
 @Table(name = "support_tickets")
 public class SupportTicket {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "support_tickets_id_gen")
-    @SequenceGenerator(name = "support_tickets_id_gen", sequenceName = "support_tickets_id_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "num_ticket", nullable = false)

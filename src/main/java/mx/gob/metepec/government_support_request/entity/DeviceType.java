@@ -13,9 +13,7 @@ import java.util.UUID;
 @Table(name = "device_type")
 public class DeviceType {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "device_type_id_gen")
-    @SequenceGenerator(name = "device_type_id_gen", sequenceName = "device_type_id_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "name_device", nullable = false, length = Integer.MAX_VALUE)
