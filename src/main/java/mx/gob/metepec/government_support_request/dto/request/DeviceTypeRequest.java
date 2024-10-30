@@ -10,9 +10,6 @@ import java.util.UUID;
 @Getter
 public class DeviceTypeRequest {
 
-    private String nameDevice;
-    private String code;
     private UUID uuid;
-    private Boolean active = false;
 
 }

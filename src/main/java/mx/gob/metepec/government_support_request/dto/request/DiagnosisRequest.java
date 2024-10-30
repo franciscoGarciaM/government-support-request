@@ -10,10 +10,6 @@ import java.util.UUID;
 @Getter
 public class DiagnosisRequest {
 
-    private String failure;
     private UUID uuid;
-    private Boolean active;
-    private LocalDate createdDate;
-    private LocalDate updatedDate;
 
 }

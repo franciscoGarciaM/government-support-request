@@ -13,8 +13,6 @@ public class DeviceTypeMapper {
 
     public static DeviceType mapRequestToEntity(DeviceTypeRequest request) {
         DeviceType deviceType = new DeviceType();
-        deviceType.setNameDevice(request.getNameDevice());
-        deviceType.setCode(request.getCode());
         deviceType.setUuid(UUID.randomUUID());
         deviceType.setActive(true);
         deviceType.setCreatedDate(LocalDate.now());

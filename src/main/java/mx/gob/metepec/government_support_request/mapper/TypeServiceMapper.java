@@ -13,8 +13,6 @@ public class TypeServiceMapper {
 
     public static TypeService mapRequestToEntity(TypeServiceRequest typeServiceRequest) {
         TypeService typeService = new TypeService();
-        typeService.setDescription(typeServiceRequest.getDescription());
-        typeService.setSlaHours(typeServiceRequest.getSlaHours());
         typeService.setUuid(UUID.randomUUID());
         typeService.setActive(true);
         typeService.setCreatedDate(LocalDate.now());

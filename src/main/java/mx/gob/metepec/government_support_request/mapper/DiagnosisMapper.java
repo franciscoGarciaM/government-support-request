@@ -13,7 +13,6 @@ public class DiagnosisMapper {
 
     public static Diagnosis mapRequestToEntity(DiagnosisRequest request){
         Diagnosis diagnosis = new Diagnosis();
-        diagnosis.setFailure(request.getFailure());
         diagnosis.setUuid(UUID.randomUUID());
         diagnosis.setActive(true);
         diagnosis.setCreatedDate(LocalDate.now());

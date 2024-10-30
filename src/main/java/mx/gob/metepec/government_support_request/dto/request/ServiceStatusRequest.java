@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class TypeServiceRequest {
+public class ServiceStatusRequest {
 
-      private UUID uuid;
+    private UUID uuid;
 }
