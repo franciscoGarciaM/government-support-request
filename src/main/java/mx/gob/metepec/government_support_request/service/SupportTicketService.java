@@ -1,8 +1,9 @@
 package mx.gob.metepec.government_support_request.service;
 
 import jakarta.transaction.Transactional;
+import mx.gob.metepec.government_support_request.client.EmployeeApiClient;
 import mx.gob.metepec.government_support_request.dto.request.SupportTicketRequest;
-import mx.gob.metepec.government_support_request.dto.response.EmployeeResponse;
+import mx.gob.metepec.government_support_request.dto.response.external.EmployeeResponse;
 import mx.gob.metepec.government_support_request.dto.response.SupportTicketResponse;
 import mx.gob.metepec.government_support_request.entity.*;
 import mx.gob.metepec.government_support_request.exceptions.ResourceNotException;
@@ -38,7 +39,8 @@ public class SupportTicketService {
     private ServiceStatusRepository serviceStatusRepository;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private EmployeeApiClient employeeApiClient;
+
 
     //GET
     public List<SupportTicketResponse> buscarTodos(){
@@ -54,36 +56,8 @@ public class SupportTicketService {
         SupportTicket support = supportTicketRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RuntimeException("Support ticket not found"));
 
-        EmployeeResponse client = null;
-        EmployeeResponse technical = null;
-
-        // Obtener datos del cliente
-        try {
-            client = restTemplate.getForObject(
-                    "http://localhost:8080/api/v1/employees/" + support.getClientUuid(),
-                    EmployeeResponse.class
-            );
-        } catch (HttpClientErrorException e) {
-            // Manejar el error si no se encuentra el empleado
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                // Loguear o manejar el caso donde el cliente no se encontró
-                System.out.println("Cliente no encontrado: " + support.getClientUuid());
-            }
-        }
-
-        // Obtener datos del técnico
-        try {
-            technical = restTemplate.getForObject(
-                    "http://localhost:8080/api/v1/employees/" + support.getTechnicalUuid(),
-                    EmployeeResponse.class
-            );
-        } catch (HttpClientErrorException e) {
-            // Manejar el error si no se encuentra el empleado
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                // Loguear o manejar el caso donde el técnico no se encontró
-                System.out.println("Técnico no encontrado: " + support.getTechnicalUuid());
-            }
-        }
+        EmployeeResponse client = employeeApiClient.getEmployeeByUUID(support.getClientUuid());
+        EmployeeResponse technical = employeeApiClient.getEmployeeByUUID(support.getTechnicalUuid());
 
         // Crear la respuesta
         SupportTicketResponse response = SupportTicketMapper.mapEntityToResponse(support);

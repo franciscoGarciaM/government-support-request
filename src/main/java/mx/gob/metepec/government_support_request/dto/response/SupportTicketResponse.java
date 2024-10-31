@@ -2,10 +2,7 @@ package mx.gob.metepec.government_support_request.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
-import mx.gob.metepec.government_support_request.entity.DeviceType;
-import mx.gob.metepec.government_support_request.entity.Diagnosis;
-import mx.gob.metepec.government_support_request.entity.ServiceStatus;
-import mx.gob.metepec.government_support_request.entity.TypeService;
+import mx.gob.metepec.government_support_request.dto.response.external.EmployeeResponse;
 
 import java.time.LocalDate;
 import java.util.List;

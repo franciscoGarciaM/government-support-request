@@ -1,4 +1,4 @@
-package mx.gob.metepec.government_support_request.dto.response;
+package mx.gob.metepec.government_support_request.dto.response.external;
 
 import java.util.UUID;
 

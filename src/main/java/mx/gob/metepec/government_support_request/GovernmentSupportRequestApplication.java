@@ -12,9 +12,4 @@ public class GovernmentSupportRequestApplication {
 		SpringApplication.run(GovernmentSupportRequestApplication.class, args);
 	}
 
-	//Agrega el metodo para crear el bean de RestTemplate
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
 }
