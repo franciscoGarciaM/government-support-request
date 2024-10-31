@@ -28,7 +28,12 @@ public class SupportTicketMapper {
         st.setDeviceType(device);
         st.setTypeService(type);
         st.setDiagnosis(diagnosis);
-        st.setClientUuid(UUID.randomUUID()); // O asigna el valor desde STicketRequest si corresponde
+         // O asigna el valor desde STicketRequest si corresponde
+        if (STicketRequest.getClientUuid() != null) {
+            st.setClientUuid(STicketRequest.getClientUuid());
+        } else {
+            st.setClientUuid(null);
+        }
         //st.setPurchaseUuid(STicketRequest.getPurchaseUuid());
         //st.setPurchaseUuid(UUID.randomUUID());
         if (STicketRequest.getPurchaseUuid() != null) {

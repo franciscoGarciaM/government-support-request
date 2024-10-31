@@ -31,4 +31,7 @@ public class SupportTicketResponse {
     private UUID clientUuid;
     private UUID technicalUuid;
     private UUID purchaseUuid;
+
+    private EmployeeResponse client;
+    private EmployeeResponse technical;
 }

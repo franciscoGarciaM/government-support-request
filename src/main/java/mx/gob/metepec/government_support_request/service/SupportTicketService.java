@@ -2,13 +2,17 @@ package mx.gob.metepec.government_support_request.service;
 
 import jakarta.transaction.Transactional;
 import mx.gob.metepec.government_support_request.dto.request.SupportTicketRequest;
+import mx.gob.metepec.government_support_request.dto.response.EmployeeResponse;
 import mx.gob.metepec.government_support_request.dto.response.SupportTicketResponse;
 import mx.gob.metepec.government_support_request.entity.*;
 import mx.gob.metepec.government_support_request.exceptions.ResourceNotException;
 import mx.gob.metepec.government_support_request.mapper.SupportTicketMapper;
 import mx.gob.metepec.government_support_request.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,15 +37,62 @@ public class SupportTicketService {
     @Autowired
     private ServiceStatusRepository serviceStatusRepository;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     //GET
     public List<SupportTicketResponse> buscarTodos(){
         return SupportTicketMapper.mapEntityListToResponseList(supportTicketRepository.findAll());
     }
-
+/*
     public SupportTicketResponse getByUuid(UUID uuid){
         SupportTicket support = supportTicketRepository.findByUuid(uuid).orElseThrow(() -> new RuntimeException("Support ticket not found"));
         return SupportTicketMapper.mapEntityToResponse(support);
     }
+ */
+    public SupportTicketResponse getByUuid(UUID uuid) {
+        SupportTicket support = supportTicketRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Support ticket not found"));
+
+        EmployeeResponse client = null;
+        EmployeeResponse technical = null;
+
+        // Obtener datos del cliente
+        try {
+            client = restTemplate.getForObject(
+                    "http://localhost:8080/api/v1/employees/" + support.getClientUuid(),
+                    EmployeeResponse.class
+            );
+        } catch (HttpClientErrorException e) {
+            // Manejar el error si no se encuentra el empleado
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                // Loguear o manejar el caso donde el cliente no se encontró
+                System.out.println("Cliente no encontrado: " + support.getClientUuid());
+            }
+        }
+
+        // Obtener datos del técnico
+        try {
+            technical = restTemplate.getForObject(
+                    "http://localhost:8080/api/v1/employees/" + support.getTechnicalUuid(),
+                    EmployeeResponse.class
+            );
+        } catch (HttpClientErrorException e) {
+            // Manejar el error si no se encuentra el empleado
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                // Loguear o manejar el caso donde el técnico no se encontró
+                System.out.println("Técnico no encontrado: " + support.getTechnicalUuid());
+            }
+        }
+
+        // Crear la respuesta
+        SupportTicketResponse response = SupportTicketMapper.mapEntityToResponse(support);
+        response.setClient(client); // Esto puede ser null si no se encontró
+        response.setTechnical(technical); // Esto también puede ser null si no se encontró
+
+        return response;
+    }
+
 
     //POST
     @Transactional
@@ -90,7 +141,8 @@ public class SupportTicketService {
 
     @Transactional
     public SupportTicketResponse update(UUID uuid, SupportTicketRequest supportTicketRequest){
-        SupportTicket existingTicket = supportTicketRepository.findByUuid(uuid).orElseThrow(() -> new RuntimeException("Support ticket not found"));
+        SupportTicket existingTicket = supportTicketRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Support ticket not found"));
 
         existingTicket.setNumTicket(supportTicketRequest.getNumTicket());
         existingTicket.setDeviceCharacteristics(supportTicketRequest.getDeviceCharacteristics());

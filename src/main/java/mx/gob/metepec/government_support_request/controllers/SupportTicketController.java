@@ -38,17 +38,18 @@ public class SupportTicketController {
             return ResponseEntity.ok(supportTicketResponse);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @PutMapping("/supportticket/{uuid}")
-    public ResponseEntity<SupportTicketResponse> updateSupportTicket(@PathVariable UUID uuid, @RequestBody SupportTicketRequest supportTicketRequest) {
+    public ResponseEntity<SupportTicketResponse> updateSupportTicket(@PathVariable UUID uuid,
+                                                                     @RequestBody SupportTicketRequest supportTicketRequest) {
         try {
             SupportTicketResponse supportTicketResponse = supportTicketService.update(uuid, supportTicketRequest);
             return ResponseEntity.ok(supportTicketResponse);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
@@ -59,7 +60,7 @@ public class SupportTicketController {
             supportTicketService.delete(uuid);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
